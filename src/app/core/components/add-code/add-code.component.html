@@ -1,0 +1,77 @@
+<div>
+  <form [formGroup]="cheatForm" fxLayout="column" fxLayoutGap="10px" class="form">
+    <div class="form-container" fxLayout="row" fxLayout.lt-md="column" fxFlex="100%" fxLayoutGap="10px">
+      <div class="form-field" fxLayout="column" fxFlex="30%">
+        <label fxFlex="40%">Title</label>
+        <mat-form-field appearance="outline" fxFlex="60%">
+          <input matInput formControlName="title">
+          <mat-error *ngIf="cheatForm.get('title')?.hasError('required')">*This field is required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-field" fxLayout="column" fxFlex="50%">
+        <label fxFlex="40%">Description</label>
+        <mat-form-field appearance="outline" fxFlex="60%">
+          <input matInput formControlName="description">
+          <!-- <mat-error *ngIf="employeeDetail.get('lastName')?.hasError('required')">{{messages?.Required}}</mat-error> -->
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-container">
+      <mat-select placeholder="select code" formControlName="ftype">
+        <mat-option value="HTML">
+          Html
+        </mat-option>
+        <mat-option value="TS">
+          Type Script
+        </mat-option>
+        <mat-option value="CSS">
+          CSS
+        </mat-option>
+        <mat-option value="NODE">
+          Node js
+        </mat-option>
+        <mat-option value="JSX">
+          REACT JS
+        </mat-option>
+      </mat-select>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" class="code">
+        <textarea matInput formControlName="fcode" class="inside"></textarea>
+        <!-- <mat-error *ngIf="employeeDetail.get('lastName')?.hasError('required')">{{messages?.Required}}</mat-error> -->
+      </mat-form-field>
+    </div>
+
+    <button *ngIf="!ts_code" mat-raised-button color="primary" (click)="add()">
+      <mat-icon>add</mat-icon>ADD CODE
+    </button>
+    <div *ngIf=" ts_code">
+      <mat-select placeholder="select code" name="item" formControlName="stype">
+        <mat-option value="HTML">
+          Html
+        </mat-option>
+        <mat-option value="TS">
+          Type Script
+        </mat-option>
+        <mat-option value="CSS">
+          CSS
+        </mat-option>
+        <mat-option value="NODE">
+          Node js
+        </mat-option>
+        <mat-option value="JSX">
+          REACT JS
+        </mat-option>
+      </mat-select>
+      <div>
+        <mat-form-field appearance="outline" class="code">
+          <textarea matInput formControlName="scode" class="inside"></textarea>
+          <!-- <mat-error *ngIf="employeeDetail.get('lastName')?.hasError('required')">{{messages?.Required}}</mat-error> -->
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-divider>
+    </mat-divider>
+    <button mat-raised-button color="primary" (click)="onSubmit()">SUBMIT</button>
+  </form>
+</div>

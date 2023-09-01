@@ -1,0 +1,31 @@
+.main-container {
+  padding: 10px;
+  padding-top: 20px;
+}
+
+.card {
+  height: 100px;
+  width: 100%;
+  margin-bottom: 20px;
+  margin-inline: 10px;
+  background: linear-gradient(to left, rgb(223, 61, 255), rgb(11, 209, 235));
+  border-radius: 10px;
+  font-size: 25px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.feedback {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.mat-mdc-raised-button.my {
+  background-color: gray;
+  color: white;
+}
+
+.dialog {
+  padding-inline: 10px;
+}

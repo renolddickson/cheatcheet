@@ -1,0 +1,33 @@
+.main-container {
+  background: url(../../../../assets/bg.jpg);
+  background-position: center;
+  background-size: cover;
+  min-height: 100vh;
+
+  .content-container {
+    min-height: 100vh;
+    background-color: rgba(225, 225, 225, 0.5);
+    -webkit-backdrop-filter: blur(55px);
+    backdrop-filter: blur(55px);
+    padding: 20px;
+  }
+}
+.copy_btn {
+  position: absolute;
+  right: 0;
+}
+.capFirst {
+  text-transform: capitalize;
+}
+code {
+  padding: 10px;
+}
+.back_btn {
+  color: white;
+}
+.add-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+}

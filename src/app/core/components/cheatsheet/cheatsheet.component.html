@@ -1,0 +1,45 @@
+<div class="main-container">
+  <div class="content-container">
+    <div class="top-container" fxLayoutAlign="space-between start">
+      <button class="back_btn" mat-icon-button routerLink="/main"><mat-icon>arrow_back</mat-icon></button>
+      <div class="filter">
+        <mat-form-field>
+          <input matInput placeholder="search..." (input)="onSearch($event)">
+        </mat-form-field>
+      </div>
+    </div>
+    <span fxLayoutAlign="center center" *ngIf="!data">
+      <mat-spinner>
+      </mat-spinner></span>
+    <mat-accordion *ngIf="data">
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngFor="let item of data">
+        <mat-expansion-panel-header>
+          <mat-panel-title class="capFirst">
+            {{item.title}}
+          </mat-panel-title>
+          <mat-panel-description class="capFirst">
+            {{item.description?item.description:"No description"}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" animationDuration="0ms">
+          <mat-tab [label]="item.ftype">
+            <button mat-icon-button color="accent" class="copy_btn"
+              [cdkCopyToClipboard]="item.fcode"><mat-icon>file_copy</mat-icon></button>
+            <pre><code [highlight]="item.fcode"></code></pre>
+          </mat-tab>
+          <mat-tab *ngIf="item.stype" [label]="item.stype">
+            <button mat-icon-button color="accent" class="copy_btn"
+              [cdkCopyToClipboard]="item.scode"><mat-icon>file_copy</mat-icon></button>
+            <pre><code [highlight]="item.scode">
+            </code></pre>
+          </mat-tab>
+        </mat-tab-group>
+        <button mat-icon-button (click)="onDelete(item.id)" *ngIf="isAuth"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button (click)="onEdit(item.id)" *ngIf="isAuth"><mat-icon>edit</mat-icon></button>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+<div class="add-btn" *ngIf="isAuth">
+  <button mat-fab [routerLink]="['/add',id]"><mat-icon>add</mat-icon></button>
+</div>

@@ -1,0 +1,55 @@
+<mat-toolbar>
+  <h3>CHEATSHEET</h3>
+</mat-toolbar>
+<div fxLayoutAlign="center center">
+  <div class="main-container" fxLayout="row wrap" fxLayoutAlign="space-between start">
+    <a class="card" matRipple matRippleColor="accent" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
+      fxLayoutAlign="space-around center"
+      href="https://drive.google.com/drive/folders/1cTWpLz7wWah_DFnqct9s9s1eH94mc_Jt?usp=share_link" target="_blank">
+      Angular Class Videos
+      <mat-icon>play_circle</mat-icon>
+    </a>
+    <a class="card" matRipple matRippleColor="accent" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
+      fxLayoutAlign="space-around center"
+      href="https://drive.google.com/drive/folders/1ze8zhPiLDkLaf81qp3-PyddU4JKTLrFE?usp=share_link" target="_blank">
+      Node Class Videos
+      <mat-icon>play_circle</mat-icon>
+    </a>
+    <div class="card" matRipple matRippleColor="accent" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
+      fxLayoutAlign="space-around center">
+      React Class Videos
+      <mat-icon>play_circle</mat-icon>
+    </div>
+    <div class="card" matRipple [routerLink]="['/cheatsheet','angular']" fxFlex="30%" fxFlex.lt-md="45%"
+      fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
+      Angular
+      cheatsheet</div>
+    <div class="card" matRipple [routerLink]="['/cheatsheet','node']" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
+      fxLayoutAlign="space-around center">
+      Node
+      cheatsheet</div>
+    <div class="card" matRipple [routerLink]="['/cheatsheet','react']" fxFlex="30%" fxFlex.lt-md="45%"
+      fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
+      React
+      cheatsheet</div>
+  </div>
+</div>
+<a href="mailto: iamjerry404@gmail.com" class="feedback" mat-raised-button fxHide.lt-md="true"
+  color="primary"><mat-icon>feedback</mat-icon>Feedback</a>
+
+<ng-template #collectiondialog>
+  <br>
+  <div class="dialog">
+    <form class="collection-input" [formGroup]="collection" mat-dialog-content fxLayout="column">
+      <mat-form-field class="collection_input" appearance="outline" fxFlex="90%" style="margin-bottom: 0px">
+        <input matInput placeholder="Email" formControlName="name">
+      </mat-form-field>
+      <mat-form-field class="collection_input" appearance="outline" fxFlex="90%" style="margin-bottom: 0px">
+        <input matInput placeholder="password" formControlName="password" type="password">
+      </mat-form-field>
+    </form>
+    <div mat-dialog-actions>
+      <button mat-raised-button class="my" mat-dialog-close="true" (click)="onLogin()">Login</button>
+    </div><br>
+  </div>
+</ng-template>

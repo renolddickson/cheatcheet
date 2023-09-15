@@ -1,42 +1,55 @@
-<mat-toolbar>
-  <h3>CHEATSHEET</h3>
+<mat-toolbar style="background-color: rgb(114, 207, 171);">
+  <h3>ANGOSHEET 2.0</h3>
 </mat-toolbar>
 <div fxLayoutAlign="center center">
   <div class="main-container" fxLayout="row wrap" fxLayoutAlign="space-between start">
     <a class="card" matRipple matRippleColor="accent" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
       fxLayoutAlign="space-around center"
-      href="https://drive.google.com/drive/folders/11g66kXkfr-Z9Rm9T-vbb5jU5oq1vIq9k?usp=sharing" target="_blank">
+      href="https://drive.google.com/drive/folders/11g66kXkfr-Z9Rm9T-vbb5jU5oq1vIq9k?usp=sharing" target="_blank"
+      style="background: #d82d2f;">
       Angular Class Videos
       <mat-icon>play_circle</mat-icon>
     </a>
     <a class="card" matRipple matRippleColor="accent" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
       fxLayoutAlign="space-around center"
-      href="https://drive.google.com/drive/folders/1ze8zhPiLDkLaf81qp3-PyddU4JKTLrFE?usp=share_link" target="_blank">
+      href="https://drive.google.com/drive/folders/1ze8zhPiLDkLaf81qp3-PyddU4JKTLrFE?usp=share_link" target="_blank"
+      style="background: #73aa60;">
       Node Class Videos
       <mat-icon>play_circle</mat-icon>
     </a>
     <a class="card" matRipple matRippleColor="accent" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
       fxLayoutAlign="space-around center"
-      href="https://drive.google.com/drive/folders/1-euSrbdLHLEv0vixqzbcfdJngqUHfZfR?usp=sharing" target="_blank">
+      href="https://drive.google.com/drive/folders/1-euSrbdLHLEv0vixqzbcfdJngqUHfZfR?usp=sharing" target="_blank"
+      style="background: #4f9ddd;">
       Phase ii Angular Videos
       <mat-icon>play_circle</mat-icon>
     </a>
-    <div class="card" matRipple [routerLink]="['/cheatsheet','angular']" fxFlex="30%" fxFlex.lt-md="45%"
+    <div class=" card" matRipple [routerLink]="['/cheatsheet','angular']" fxFlex="30%" fxFlex.lt-md="45%"
       fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
       Angular
-      cheatsheet</div>
+      cheatsheet
+    </div>
     <div class="card" matRipple [routerLink]="['/cheatsheet','node']" fxFlex="30%" fxFlex.lt-md="45%" fxFlex.lt-sm="95%"
       fxLayoutAlign="space-around center">
       Node
       cheatsheet</div>
-    <div class="card" matRipple [routerLink]="['/cheatsheet','react']" fxFlex="30%" fxFlex.lt-md="45%"
+    <div class="card" matRipple [routerLink]="['/cheatsheet','unit_testing']" fxFlex="30%" fxFlex.lt-md="45%"
       fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
-      React
-      cheatsheet</div>
+      Unit Testing</div>
+    <div class="card" matRipple [routerLink]="['/cheatsheet','e2e_testing']" fxFlex="30%" fxFlex.lt-md="45%"
+      fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
+      E2E Testing</div>
+    <div class="card" matRipple [routerLink]="['/cheatsheet','themecreation']" fxFlex="30%" fxFlex.lt-md="45%"
+      fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
+      Themes</div>
+    <div class="card" matRipple [routerLink]="['/cheatsheet','nx_architecture']" fxFlex="30%" fxFlex.lt-md="45%"
+      fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
+      Nx Arch</div>
+    <div class="card new" [routerLink]="['/token_converter']" matRipple fxFlex="30%" fxFlex.lt-md="45%"
+      fxFlex.lt-sm="95%" fxLayoutAlign="space-around center">
+      Token Format converter</div>
   </div>
 </div>
-<a href="mailto: iamjerry404@gmail.com" class="feedback" mat-raised-button fxHide.lt-md="true"
-  color="primary"><mat-icon>feedback</mat-icon>Feedback</a>
 
 <ng-template #collectiondialog>
   <br>

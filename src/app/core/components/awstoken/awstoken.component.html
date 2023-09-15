@@ -1,0 +1,16 @@
+<div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;">
+  <div class="left">
+    <mat-form-field class="example-full-width">
+      <mat-label>Message</mat-label>
+      <textarea matInput #message maxlength="256" placeholder="Ex. I need help with..." appearance="outline"></textarea>
+      <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+    </mat-form-field>
+  </div>
+  <div class="right">
+    <mat-form-field class="example-full-width">
+      <mat-label>Message</mat-label>
+      <textarea matInput #message maxlength="256" placeholder="Ex. I need help with..." appearance="outline"></textarea>
+      <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+    </mat-form-field>
+  </div>
+</div>

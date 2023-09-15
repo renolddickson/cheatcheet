@@ -5,12 +5,17 @@ import { CheatsheetComponent } from './core/components/cheatsheet/cheatsheet.com
 import { LoginGuard } from './core/services/Guard/login.guard';
 import { AddCodeComponent } from './core/components/add-code/add-code.component';
 import { CanDeactivateGuard } from './core/services/Guard/can-deactivate.guard';
+import { AwstokenComponent } from './core/components/awstoken/awstoken.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
   {
     path: 'main',
     component: MainComponent,
+  },
+  {
+    path: 'token_converter',
+    component: AwstokenComponent
   },
   {
     path: 'cheatsheet/:id',
@@ -35,4 +40,4 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 
-export class AppRoutingModule {}
+export class AppRoutingModule { }

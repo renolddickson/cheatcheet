@@ -25,9 +25,10 @@ import {
   HighlightOptions,
 } from 'ngx-highlightjs';
 import { DialogComponent } from './components/dialog/dialog.component';
+import { AwstokenComponent } from './components/awstoken/awstoken.component';
 
 @NgModule({
-  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent],
+  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent],
 
   imports: [
     CommonModule,

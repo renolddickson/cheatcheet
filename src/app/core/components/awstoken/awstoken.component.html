@@ -1,20 +1,14 @@
 <div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;"
-  [formGroup]="converter">
-  <div class="left">
-    <mat-form-field class="example-full-width">
-      <mat-label>Message</mat-label>
-      <textarea matInput #left maxlength="256" placeholder="Ex. I need help with..." appearance="outline"
-        formControlName="normal"></textarea>
-      <mat-hint align="end">{{left.value.length}} / 256</mat-hint>
-    </mat-form-field>
-  </div>
-  <div class="right">
-    <mat-form-field class="example-full-width">
-      <mat-label>Message</mat-label>
-      <textarea matInput #right maxlength="256" placeholder="Ex. I need help with..." appearance="outline"
-        formControlName="converted"></textarea>
-      <mat-hint align="end">{{right.value.length}} / 256</mat-hint>
-    </mat-form-field>
+  [formGroup]="converter" fxLayout="column">
+  <div class="textBox" fxLayout="row" fxLayout.lt-md="column">
+    <div class="left" fxFlex="50%" fxFlex.lt-md="100%">
+      <textarea matInput #left placeholder="Ex. I need help with..." appearance="outline" formControlName="normal"
+        style="width: 500px;height: 500px;"></textarea>
+    </div>
+    <div class="right" fxFlex="50%" fxFlex.lt-md="100%">
+      <textarea matInput #right placeholder="Ex. I need help with..." appearance="outline" formControlName="converted"
+        style="width: 500px;height: 500px;"></textarea>
+    </div>
   </div>
   <button (click)="onConvert()">convert</button>
 </div>

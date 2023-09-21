@@ -1,14 +1,21 @@
 <div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;"
-  [formGroup]="converter" fxLayout="column">
-  <div class="textBox" fxLayout="row" fxLayout.lt-md="column">
+  [formGroup]="converter" fxLayout="column" fxLayoutGap="30px">
+  <div class="textBox" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="40px">
     <div class="left" fxFlex="50%" fxFlex.lt-md="100%">
-      <textarea matInput #left placeholder="Enter normal token" appearance="outline" formControlName="normal"
-        style="width: 500px;height: 500px;"></textarea>
+      <div class="group">
+        <textarea placeholder="Enter normal token" #left type="search" formControlName="normal"
+          class="input"></textarea>
+      </div>
     </div>
     <div class="right" fxFlex="50%" fxFlex.lt-md="100%">
-      <textarea matInput #right placeholder="Converted token" appearance="outline" formControlName="converted"
-        style="width: 500px;height: 500px;"></textarea>
+      <div class="group">
+        <textarea placeholder="Converted token" #right type="search" formControlName="converted"
+          class="input"></textarea>
+      </div>
     </div>
   </div>
-  <button (click)="onConvert()">convert</button>
+  <div>
+    <button class="btn" (click)="onConvert()"><i class="animation"></i>CONVERT<i class="animation"></i>
+    </button>
+  </div>
 </div>

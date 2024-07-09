@@ -26,9 +26,10 @@ import {
 } from 'ngx-highlightjs';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { AwstokenComponent } from './components/awstoken/awstoken.component';
+import { TranslatePathComponent } from './components/translate-path/translate-path.component';
 
 @NgModule({
-  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent],
+  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent],
 
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-<div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;"
+<div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;overflow-x: hidden;padding: 15px;"
   [formGroup]="converter" fxLayout="column" fxLayoutGap="30px">
   <div class="textBox" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="40px">
     <div class="left" fxFlex="50%" fxFlex.lt-md="100%">
@@ -24,7 +24,7 @@
   <div fxLayout="column" style="max-height: 80vh;">
     <div *ngFor="let keyArray of result; let i = index">
       <section class="example-section">
-        <span class="example-list-section">
+        <span class="example-list-section" *ngIf="keyArray && keyArray.length>0">
           <mat-checkbox class="example-margin"
                         [(ngModel)]="allComplete[i]"
                         [indeterminate]="someComplete(i)"
@@ -42,7 +42,8 @@
         </span>
       </section>
     </div>
-    
-    <button mat-raised-button (click)="confirmSelection()">OK</button>
+    <div fxLayoutAlign="center center">
+      <button mat-raised-button (click)="confirmSelection()" style="padding-block: 10px;background-color: rgb(25, 165, 25);">OK</button>
+    </div>
   </div>
 </ng-template>

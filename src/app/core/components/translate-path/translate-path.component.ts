@@ -9,13 +9,16 @@ import { MatDialog } from '@angular/material/dialog';
 })
 
 export class TranslatePathComponent {
-  @ViewChild('chipdialog') selectDialog!:TemplateRef<any>;
+  @ViewChild('chipdialog') selectDialog!: TemplateRef<any>;
 
   converter!: FormGroup;
   result: string[][] = [];
   selectedKeys: boolean[][] = [];
   allComplete: boolean[] = [];
-constructor(private dialog:MatDialog){}
+  jsonData: any[] = []; // Store parsed JSON data here
+
+  constructor(private dialog: MatDialog) {}
+
   ngOnInit(): void {
     this.converter = new FormGroup({
       normal: new FormControl(null),
@@ -24,13 +27,13 @@ constructor(private dialog:MatDialog){}
   }
 
   onConvert() {
-    const Json_data: string = this.converter.get('normal')?.value;
-    if (Json_data) {
-      const json: any[] = JSON.parse(Json_data);
-      this.getKeyPathsFromDetails(json).then(res => {
+    const jsonDataString: string = this.converter.get('normal')?.value;
+    if (jsonDataString) {
+      this.jsonData = JSON.parse(jsonDataString);
+      this.getKeyPathsFromDetails(this.jsonData).then(res => {
         this.result = res;
         this.initializeSelections();
-        const dialogRef= this.dialog.open(this.selectDialog)
+        const dialogRef = this.dialog.open(this.selectDialog);
       });
     }
   }
@@ -52,7 +55,14 @@ constructor(private dialog:MatDialog){}
       if (obj.hasOwnProperty(key)) {
         const value = obj[key];
         const newKey = parentKey ? `${parentKey}.${key}` : key;
-        if (key.toLowerCase().includes('color') || key.toLowerCase().includes('images') || key.toLowerCase().includes('imageurl') || key.toLowerCase().includes('fontfamily') || key.toLowerCase().includes('fontstyle') || typeof value === 'boolean' || typeof value === 'number' || value === 'en') {
+        if (key.toLowerCase().includes('color') ||
+            key.toLowerCase().includes('images') ||
+            key.toLowerCase().includes('imageurl') ||
+            key.toLowerCase().includes('fontfamily') ||
+            key.toLowerCase().includes('fontstyle') ||
+            typeof value === 'boolean' ||
+            typeof value === 'number' ||
+            value === 'en') {
           continue;
         }
         if (Array.isArray(value)) {
@@ -107,8 +117,28 @@ constructor(private dialog:MatDialog){}
         .filter(key => key !== null); // Filter out null values here
       selectedPaths.push(selected as string[]); // Assert 'selected' as 'string[]'
     });
-    console.log(selectedPaths);
+
+    // Update the JSON data with translated paths
+    selectedPaths.forEach((paths, i) => {
+      paths.forEach(path => {
+        this.setPathValue(this.jsonData[i], path.split('.'));
+      });
+    });
+
+    // Set the updated JSON data in the converter form
+    this.converter.patchValue({ converted: JSON.stringify(this.jsonData) });
+
+    console.log(this.jsonData); // Log the updated JSON data
     // Perform further actions with selectedPaths
   }
-  
+
+  // Helper function to set value at given path in object
+  setPathValue(obj: any, path: string[], value: any = 'en') {
+    if (path.length === 1) {
+      obj[path[0]] = { en: value }; // Convert heading: "" to heading: { en: "" }
+    } else {
+      const key = path.shift()!;
+      this.setPathValue(obj[key], path, value);
+    }
+  }
 }

@@ -1,3 +1,48 @@
-<div fxLayoutAlign="center center">
-  <h3>Comming Soon</h3>
+<div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;"
+  [formGroup]="converter" fxLayout="column" fxLayoutGap="30px">
+  <div class="textBox" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="40px">
+    <div class="left" fxFlex="50%" fxFlex.lt-md="100%">
+      <div class="group">
+        <textarea placeholder="Enter normal JSON" #left type="search" formControlName="normal"
+          class="input"></textarea>
+      </div>
+    </div>
+    <div class="right" fxFlex="50%" fxFlex.lt-md="100%">
+      <div class="group">
+        <textarea placeholder="Converted JSON" #right type="search" formControlName="converted"
+          class="input"></textarea>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button class="btn" (click)="onConvert()"><i class="animation"></i>CONVERT<i class="animation"></i>
+    </button>
+  </div>
 </div>
+
+<ng-template #chipdialog>
+  <div fxLayout="column" style="max-height: 80vh;">
+    <div *ngFor="let keyArray of result; let i = index">
+      <section class="example-section">
+        <span class="example-list-section">
+          <mat-checkbox class="example-margin"
+                        [(ngModel)]="allComplete[i]"
+                        [indeterminate]="someComplete(i)"
+                        (change)="setAll($event.checked, i)">
+            Section {{ i + 1 }}
+          </mat-checkbox>
+        </span>
+        <span class="example-list-section">
+          <div *ngFor="let key of keyArray; let j = index">
+            <mat-checkbox class="example-margin"
+                          [(ngModel)]="selectedKeys[i][j]">
+              {{ key }}
+            </mat-checkbox>
+          </div>
+        </span>
+      </section>
+    </div>
+    
+    <button mat-raised-button (click)="confirmSelection()">OK</button>
+  </div>
+</ng-template>

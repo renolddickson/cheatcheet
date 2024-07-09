@@ -27,7 +27,9 @@ import {
 import { DialogComponent } from './components/dialog/dialog.component';
 import { AwstokenComponent } from './components/awstoken/awstoken.component';
 import { TranslatePathComponent } from './components/translate-path/translate-path.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 @NgModule({
   declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent],
 
@@ -49,6 +51,9 @@ import { TranslatePathComponent } from './components/translate-path/translate-pa
     MatDividerModule,
     MatSelectModule,
     MatDialogModule,
+    MatCheckboxModule,
+    FormsModule,
+    BrowserAnimationsModule,
     MatProgressSpinnerModule,
   ],
   providers: [

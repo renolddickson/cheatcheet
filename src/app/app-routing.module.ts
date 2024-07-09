@@ -6,7 +6,7 @@ import { LoginGuard } from './core/services/Guard/login.guard';
 import { AddCodeComponent } from './core/components/add-code/add-code.component';
 import { CanDeactivateGuard } from './core/services/Guard/can-deactivate.guard';
 import { AwstokenComponent } from './core/components/awstoken/awstoken.component';
-import { SampleComponent } from './core/components/sample/sample.component';
+import { TranslatePathComponent } from './core/components/translate-path/translate-path.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
@@ -35,8 +35,8 @@ const routes: Routes = [
     canDeactivate: [CanDeactivateGuard],
   },
   {
-    path: 'sample',
-    component: SampleComponent
+    path: 'translate',
+    component: TranslatePathComponent
   }
 ];
 

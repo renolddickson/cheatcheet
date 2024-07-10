@@ -8,9 +8,9 @@
       </div>
     </div>
     <div class="right" fxFlex="50%" fxFlex.lt-md="100%" style="position: relative;">
-      <div style="position: absolute;right: 0;top: 0;">
+      <div style="position: absolute;right: 10px;top: 10px;">
         <button mat-icon-button color="accent" class="copy_btn" *ngIf="converter.get('converted')?.value"
-        [cdkCopyToClipboard]="converter.get('converted')?.value"><mat-icon>file_copy</mat-icon></button>
+        [cdkCopyToClipboard]="converter.get('converted')?.value"><mat-icon style="color: green;">file_copy</mat-icon></button>
       </div>
       <div class="group">
         <textarea placeholder="Converted JSON" #right type="search" formControlName="converted"
@@ -25,16 +25,18 @@
 </div>
 
 <ng-template #chipdialog>
-  <div fxLayout="column" style="max-height: 80vh;">
+  <div fxLayout="column" style="max-height: 80vh;padding: 10px;min-width: 400px;">
     <div *ngFor="let keyArray of result; let i = index">
       <section class="example-section">
         <span class="example-list-section" *ngIf="keyArray && keyArray.length>0">
-          <mat-checkbox class="example-margin"
-                        [(ngModel)]="allComplete[i]"
-                        [indeterminate]="someComplete(i)"
-                        (change)="setAll($event.checked, i)">
+          <div style="border: 1px solid green;background-color: #d9e8d8;">
+            <mat-checkbox class="example-margin"
+            [(ngModel)]="allComplete[i]"
+            [indeterminate]="someComplete(i)"
+            (change)="setAll($event.checked, i)">
             Section {{ i + 1 }}
           </mat-checkbox>
+        </div>
         </span>
         <span class="example-list-section">
           <div *ngFor="let key of keyArray; let j = index">

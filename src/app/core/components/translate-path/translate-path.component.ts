@@ -110,6 +110,7 @@ export class TranslatePathComponent {
   }
 
   confirmSelection() {
+    this.dialog.closeAll()
     const selectedPaths: string[][] = [];
     this.selectedKeys.forEach((keyArray, i) => {
       const selected = keyArray
@@ -121,7 +122,12 @@ export class TranslatePathComponent {
     // Update the JSON data with translated paths
     selectedPaths.forEach((paths, i) => {
       paths.forEach(path => {
-        this.setPathValue(this.jsonData[i], path.split('.'));
+        this.setPathValue(this.jsonData[i].details, path.split('.'));
+        // Add the translatePath array to each section
+        if (!this.jsonData[i].translatePath) {
+          this.jsonData[i].translatePath = [];
+        }
+        this.jsonData[i].translatePath.push(path);
       });
     });
 
@@ -135,9 +141,14 @@ export class TranslatePathComponent {
   // Helper function to set value at given path in object
   setPathValue(obj: any, path: string[], value: any = 'en') {
     if (path.length === 1) {
-      obj[path[0]] = { en: value }; // Convert heading: "" to heading: { en: "" }
+      if (typeof obj[path[0]] === 'string') {
+        obj[path[0]] = { en: obj[path[0]] }; // Convert heading: "title here" to heading: { en: "title here" }
+      }
     } else {
       const key = path.shift()!;
+      if (!obj[key]) {
+        obj[key] = {};
+      }
       this.setPathValue(obj[key], path, value);
     }
   }

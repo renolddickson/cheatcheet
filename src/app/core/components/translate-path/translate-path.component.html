@@ -41,7 +41,7 @@
         <span class="example-list-section">
           <div *ngFor="let key of keyArray; let j = index">
             <mat-checkbox class="example-margin"
-                          [(ngModel)]="selectedKeys[i][j]">
+                          [(ngModel)]="selectedKeys[i][j]" [title]="getTooltipContent(i, key)">
               {{ key }}
             </mat-checkbox>
           </div>

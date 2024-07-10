@@ -168,4 +168,25 @@ export class TranslatePathComponent {
       }
     }
   }
+  getPathValue(obj: any, path: string[]): any {
+    let current = obj;
+    for (const key of path) {
+      if (current[key] === undefined) {
+        return null;
+      }
+      current = current[key];
+    }
+    return current;
+  }
+  getTooltipContent(sectionIndex: number, key: string): string {
+    const path = key.split('.');
+    const value = this.getPathValue(this.jsonData[sectionIndex].details, path);
+    if (value !== null && typeof value === 'object' && 'en' in value) {
+      return value.en;
+    } else if (value !== null) {
+      return JSON.stringify(value);
+    } else {
+      return 'No content available';
+    }
+  }
 }

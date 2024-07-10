@@ -171,10 +171,22 @@ export class TranslatePathComponent {
   getPathValue(obj: any, path: string[]): any {
     let current = obj;
     for (const key of path) {
-      if (current[key] === undefined) {
-        return null;
+      if (key.includes('[')) {
+        // Handle array index
+        const arrayKey = key.substring(0, key.indexOf('['));
+        const index = parseInt(key.substring(key.indexOf('[') + 1, key.indexOf(']')), 10);
+        current = current[arrayKey];
+        if (Array.isArray(current)) {
+          current = current[index];
+        } else {
+          return null;
+        }
+      } else {
+        current = current[key];
       }
-      current = current[key];
+      if (current === undefined || current === null) {
+        return null; // Return null if the path is invalid
+      }
     }
     return current;
   }

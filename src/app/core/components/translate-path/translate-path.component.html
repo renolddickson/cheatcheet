@@ -7,7 +7,11 @@
           class="input"></textarea>
       </div>
     </div>
-    <div class="right" fxFlex="50%" fxFlex.lt-md="100%">
+    <div class="right" fxFlex="50%" fxFlex.lt-md="100%" style="position: relative;">
+      <div style="position: absolute;right: 0;top: 0;">
+        <button mat-icon-button color="accent" class="copy_btn" *ngIf="converter.get('converted')?.value"
+        [cdkCopyToClipboard]="converter.get('converted')?.value"><mat-icon>file_copy</mat-icon></button>
+      </div>
       <div class="group">
         <textarea placeholder="Converted JSON" #right type="search" formControlName="converted"
           class="input"></textarea>

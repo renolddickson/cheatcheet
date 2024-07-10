@@ -132,7 +132,7 @@ export class TranslatePathComponent {
     });
 
     // Set the updated JSON data in the converter form
-    this.converter.patchValue({ converted: JSON.stringify(this.jsonData) });
+    this.converter.patchValue({ converted: JSON.stringify(this.jsonData, null, 2) });
 
     console.log(this.jsonData); // Log the updated JSON data
     // Perform further actions with selectedPaths

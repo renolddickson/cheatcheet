@@ -141,15 +141,31 @@ export class TranslatePathComponent {
   // Helper function to set value at given path in object
   setPathValue(obj: any, path: string[], value: any = 'en') {
     if (path.length === 1) {
-      if (typeof obj[path[0]] === 'string') {
-        obj[path[0]] = { en: obj[path[0]] }; // Convert heading: "title here" to heading: { en: "title here" }
+      const key = path[0];
+      if (Array.isArray(obj)) {
+        obj.forEach(item => {
+          if (typeof item[key] === 'string') {
+            item[key] = { en: item[key] };
+          }
+        });
+      } else if (typeof obj[key] === 'string') {
+        obj[key] = { en: obj[key] };
       }
     } else {
       const key = path.shift()!;
-      if (!obj[key]) {
-        obj[key] = {};
+      if (key.endsWith(']')) {
+        const arrayKey = key.substring(0, key.indexOf('['));
+        const index = parseInt(key.substring(key.indexOf('[') + 1, key.indexOf(']')), 10);
+        if (!obj[arrayKey]) {
+          obj[arrayKey] = [];
+        }
+        this.setPathValue(obj[arrayKey][index] || {}, path, value);
+      } else {
+        if (!obj[key]) {
+          obj[key] = {};
+        }
+        this.setPathValue(obj[key], path, value);
       }
-      this.setPathValue(obj[key], path, value);
     }
   }
 }

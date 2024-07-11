@@ -62,7 +62,7 @@ export class TranslatePathComponent {
             key.toLowerCase().includes('fontstyle') ||
             typeof value === 'boolean' ||
             typeof value === 'number' ||
-            value === 'en') {
+            value.hasOwnProperty('en')) {
           continue;
         }
         if (Array.isArray(value)) {

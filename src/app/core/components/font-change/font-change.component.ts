@@ -57,12 +57,16 @@ export class FontChangeComponent {
     for (const [oldFont, newFont] of Object.entries(this.fontFamilyReplacements)) {
       const regex = new RegExp(`\\b${oldFont}\\b`, 'gi');
       if (regex.test(fontString)) {
-        return fontString.replace(regex, newFont);
+        // Check if the newFont already has a style
+        const existingStyleRegex = /(?:serif|sans-serif|cursive|monospace)/i;
+        const hasStyle = existingStyleRegex.test(fontString);
+        const newFontWithStyle = hasStyle ? newFont.replace(/,\s*(serif|sans-serif|cursive|monospace)/i, '') : newFont;
+        return fontString.replace(regex, newFontWithStyle);
       }
     }
     return fontString;
   }
-
+  
   convertJson(): void {
     const inputJson = this.converter.get('normal')?.value;
     try {

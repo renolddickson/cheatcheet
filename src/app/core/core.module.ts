@@ -30,8 +30,9 @@ import { TranslatePathComponent } from './components/translate-path/translate-pa
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FontChangeComponent } from './components/font-change/font-change.component';
 @NgModule({
-  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent],
+  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent, FontChangeComponent],
 
   imports: [
     CommonModule,

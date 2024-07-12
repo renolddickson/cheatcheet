@@ -10,7 +10,7 @@
     <div class="right" fxFlex="50%" fxFlex.lt-md="100%" style="position: relative;">
       <div style="position: absolute;right: 10px;top: 10px;">
         <button mat-icon-button color="accent" class="copy_btn" *ngIf="converter.get('converted')?.value"
-        [cdkCopyToClipboard]="converter.get('converted')?.value"><mat-icon style="color: pink;">file_copy</mat-icon></button>
+        [cdkCopyToClipboard]="converter.get('converted')?.value"><mat-icon style="color: rgba(255, 192, 203, 0);">file_copy</mat-icon></button>
       </div>
       <div class="group">
         <textarea placeholder="Converted token" #right type="search" formControlName="converted"
@@ -18,8 +18,11 @@
       </div>
     </div>
   </div>
-  <div>
+  <div fxLayout="column" fxLayoutGap="20px">
     <button class="btn" (click)="convertJson()"><i class="animation"></i>CONVERT<i class="animation"></i>
     </button>
+    <span>
+      "Use at your own risk ⚠️"
+    </span>
   </div>
 </div>

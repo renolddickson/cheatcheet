@@ -56,21 +56,31 @@ export class FontChangeComponent {
   replaceFontFamily(fontString: string): string {
     for (const [oldFont, newFont] of Object.entries(this.fontFamilyReplacements)) {
       const regex = new RegExp(`\\b${oldFont}\\b`, 'gi');
+  
+      // Check if the old font is present
       if (regex.test(fontString)) {
-        // Check if the newFont already has a style
-        const existingStyleRegex = /(?:serif|sans-serif|cursive|monospace)/i;
-        const hasStyle = existingStyleRegex.test(fontString);
-        
-        // Ensure a space before the style if it exists
-        const newFontWithStyle = hasStyle ? newFont.replace(/,\s*(serif|sans-serif|cursive|monospace)/i, ', $1') : newFont;
-        
-        return fontString.replace(regex, newFontWithStyle);
+        // Create formatted new font with proper spacing
+        const formattedNewFont = `'${newFont}'`;
+        const hasStyleRegex = /(?:serif|sans-serif|cursive|monospace)/i;
+        const currentStyleMatch = fontString.match(hasStyleRegex);
+        const currentStyle = currentStyleMatch ? currentStyleMatch[0] : 'sans-serif'; // Default to sans-serif if none found
+  
+        // Ensure correct format with space
+        return fontString.replace(regex, formattedNewFont).trim() + `, ${currentStyle}`;
       }
     }
-    return fontString;
+  
+    // Check for already existing correct format and fix it
+    const correctFormatRegex = /"([^"]+)",?\s*(serif|sans-serif|cursive|monospace)/i;
+    const match = fontString.match(correctFormatRegex);
+    if (match) {
+      const fontName = match[1];
+      const style = match[2];
+      return `'${fontName}', ${style}`;
+    }
+  
+    return fontString; // Return unmodified if no replacements were made
   }
-  
-  
   convertJson(): void {
     const inputJson = this.converter.get('normal')?.value;
     try {

@@ -59,28 +59,25 @@ export class FontChangeComponent {
   
       // Check if the old font is present
       if (regex.test(fontString)) {
-        // Create formatted new font with proper spacing
-        const formattedNewFont = `'${newFont}'`;
-        const hasStyleRegex = /(?:serif|sans-serif|cursive|monospace)/i;
-        const currentStyleMatch = fontString.match(hasStyleRegex);
-        const currentStyle = currentStyleMatch ? currentStyleMatch[0] : 'sans-serif'; // Default to sans-serif if none found
-  
-        // Ensure correct format with space
-        return fontString.replace(regex, formattedNewFont).trim() + `, ${currentStyle}`;
+        // Create formatted new font with a space before the style
+        const formattedNewFont = `'${newFont}', ${fontString.match(/(?:serif|sans-serif|cursive|monospace)/i)?.[0] || 'sans-serif'}`;
+        return formattedNewFont; // Replace the entire string
       }
     }
   
-    // Check for already existing correct format and fix it
-    const correctFormatRegex = /"([^"]+)",?\s*(serif|sans-serif|cursive|monospace)/i;
+    // Normalize format if already correct
+    const correctFormatRegex = /'([^']+)',?\s*(serif|sans-serif|cursive|monospace)/i;
     const match = fontString.match(correctFormatRegex);
     if (match) {
       const fontName = match[1];
       const style = match[2];
-      return `'${fontName}', ${style}`;
+      return `'${fontName}', ${style}`; // Ensure correct format with single quotes
     }
   
     return fontString; // Return unmodified if no replacements were made
   }
+  
+  
   convertJson(): void {
     const inputJson = this.converter.get('normal')?.value;
     try {

@@ -60,12 +60,16 @@ export class FontChangeComponent {
         // Check if the newFont already has a style
         const existingStyleRegex = /(?:serif|sans-serif|cursive|monospace)/i;
         const hasStyle = existingStyleRegex.test(fontString);
-        const newFontWithStyle = hasStyle ? newFont.replace(/,\s*(serif|sans-serif|cursive|monospace)/i, '') : newFont;
+        
+        // Ensure a space before the style if it exists
+        const newFontWithStyle = hasStyle ? newFont.replace(/,\s*(serif|sans-serif|cursive|monospace)/i, ', $1') : newFont;
+        
         return fontString.replace(regex, newFontWithStyle);
       }
     }
     return fontString;
   }
+  
   
   convertJson(): void {
     const inputJson = this.converter.get('normal')?.value;

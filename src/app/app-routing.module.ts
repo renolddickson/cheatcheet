@@ -8,6 +8,7 @@ import { CanDeactivateGuard } from './core/services/Guard/can-deactivate.guard';
 import { AwstokenComponent } from './core/components/awstoken/awstoken.component';
 import { TranslatePathComponent } from './core/components/translate-path/translate-path.component';
 import { FontChangeComponent } from './core/components/font-change/font-change.component';
+import { ProductDetailsTpComponent } from './core/components/product-details-tp/product-details-tp.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
@@ -38,6 +39,10 @@ const routes: Routes = [
   {
     path: 'translate',
     component: TranslatePathComponent
+  },
+  {
+    path: 'translate-pd',
+    component: ProductDetailsTpComponent
   },
   {
     path: 'fontfamily',

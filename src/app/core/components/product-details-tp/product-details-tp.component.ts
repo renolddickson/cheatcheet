@@ -1,31 +1,25 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-
+interface KeyPathsResult {
+  detail: string[][];
+  sampleData: string[][];
+}
 @Component({
-  selector: 'app-translate-path',
-  templateUrl: './translate-path.component.html',
-  styleUrls: ['./translate-path.component.scss']
+  selector: 'app-product-details-tp',
+  templateUrl: './product-details-tp.component.html',
+  styleUrls: ['./product-details-tp.component.scss']
 })
-
-export class TranslatePathComponent {
+export class ProductDetailsTpComponent {
   @ViewChild('chipdialog') selectDialog!: TemplateRef<any>;
 
   converter!: FormGroup;
   result: string[][] = [];
+  sampleData: string[][] = [];
   selectedKeys: boolean[][] = [];
   allComplete: boolean[] = [];
   jsonData: any[] = []; // Store parsed JSON data here
-  autoCheckPaths: string[] = [
-    "productListDetails.filterData.filterArray[0].filterName",
-            "productListDetails.filterData.filterArray[1].filterName",
-            "productListDetails.filterData.filterArray[1].options[0].display",
-            "productListDetails.filterData.filterArray[1].options[1].display",
-            "productListDetails.filterData.sortArray[0].display",
-            "productListDetails.filterData.sortArray[1].display",
-            "productListDetails.filterData.sortArray[2].display",
-            "productListDetails.filterData.sortArray[3].display"
-  ];
+
   constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -40,22 +34,31 @@ export class TranslatePathComponent {
     if (jsonDataString) {
       this.jsonData = JSON.parse(jsonDataString);
       this.getKeyPathsFromDetails(this.jsonData).then(res => {
-        this.result = res;
+        this.result = res['detail'];
+        this.sampleData = res['sampleData']
         this.initializeSelections();
         const dialogRef = this.dialog.open(this.selectDialog);
       });
     }
   }
 
-  async getKeyPathsFromDetails(sections: any[]): Promise<string[][]> {
+  async getKeyPathsFromDetails(sections: any[]): Promise<KeyPathsResult> {
     let result: any[] = [];
+    let sampleResult:any[] =[];
     for (const section of sections) {
       if (section.details) {
         const keyPaths = await this.getKeyPaths(section.details);
         result.push(keyPaths);
       }
+      if (section.sampleData) {
+        const keyPaths = await this.getKeyPaths(section.sampleData);
+        sampleResult.push(keyPaths);
+      }
     }
-    return result;
+    const resData:KeyPathsResult = {detail:result,sampleData:sampleResult};
+    console.log(resData);
+    
+    return resData;
   }
 
   getKeyPaths(obj: any, parentKey: string = ''): string[] {
@@ -93,12 +96,8 @@ export class TranslatePathComponent {
   }
 
   initializeSelections() {
-    this.selectedKeys = this.result.map(keyArray =>
-      keyArray.map(key => this.autoCheckPaths.includes(key))
-    );
-    this.allComplete = this.selectedKeys.map(keysArray =>
-      keysArray.every(selected => selected)
-    );
+    this.selectedKeys = this.result.map(keyArray => keyArray.map(() => false));
+    this.allComplete = this.result.map(() => false);
   }
 
   isSelected(key: string, i: number): boolean {

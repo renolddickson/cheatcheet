@@ -31,8 +31,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FontChangeComponent } from './components/font-change/font-change.component';
+import { ProductDetailsTpComponent } from './components/product-details-tp/product-details-tp.component';
 @NgModule({
-  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent, FontChangeComponent],
+  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent, FontChangeComponent, ProductDetailsTpComponent],
 
   imports: [
     CommonModule,

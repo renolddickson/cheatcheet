@@ -1,0 +1,55 @@
+<div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;overflow-x: hidden;padding: 15px;"
+  [formGroup]="converter" fxLayout="column" fxLayoutGap="30px">
+  <div class="textBox" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="40px">
+    <div class="left" fxFlex="50%" fxFlex.lt-md="100%">
+      <div class="group">
+        <textarea placeholder="Enter normal JSON" #left type="search" formControlName="normal"
+          class="input"></textarea>
+      </div>
+    </div>
+    <div class="right" fxFlex="50%" fxFlex.lt-md="100%" style="position: relative;">
+      <div style="position: absolute;right: 10px;top: 10px;">
+        <button mat-icon-button color="accent" class="copy_btn" *ngIf="converter.get('converted')?.value"
+        [cdkCopyToClipboard]="converter.get('converted')?.value"><mat-icon style="color: #1228a5;">file_copy</mat-icon></button>
+      </div>
+      <div class="group">
+        <textarea placeholder="Converted JSON" #right type="search" formControlName="converted"
+          class="input"></textarea>
+      </div>
+    </div>
+  </div>
+  <div>
+    <button class="btn" (click)="onConvert()"><i class="animation"></i>CONVERT<i class="animation"></i>
+    </button>
+  </div>
+</div>
+
+<ng-template #chipdialog>
+  <div fxLayout="column" style="max-height: 80vh;padding: 10px;min-width: 400px;">
+    <div *ngFor="let keyArray of result; let i = index">
+      <section class="example-section">
+        <span class="example-list-section" *ngIf="keyArray && keyArray.length>0">
+          <div style="border: 1px solid #1228a5;background-color: #d8e1e8;">
+            <mat-checkbox class="example-margin"
+            [(ngModel)]="allComplete[i]"
+            [indeterminate]="someComplete(i)"
+            (change)="setAll($event.checked, i)">
+            Section {{ i + 1 }}
+          </mat-checkbox>
+        </div>
+        </span>
+        <span class="example-list-section">
+          <div *ngFor="let key of keyArray; let j = index">
+            <mat-checkbox class="example-margin"
+                          [(ngModel)]="selectedKeys[i][j]" [title]="getTooltipContent(i, key)">
+              {{ key }}
+            </mat-checkbox>
+          </div>
+        </span>
+      </section>
+    </div>
+    <div fxLayoutAlign="center center">
+      <button mat-raised-button (click)="confirmSelection()" style="padding-block: 10px;background-color: rgb(25, 165, 25);">OK</button>
+    </div>
+  </div>
+</ng-template>

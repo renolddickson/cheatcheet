@@ -24,7 +24,10 @@ export class TranslatePathComponent {
             "productListDetails.filterData.sortArray[0].display",
             "productListDetails.filterData.sortArray[1].display",
             "productListDetails.filterData.sortArray[2].display",
-            "productListDetails.filterData.sortArray[3].display"
+            "productListDetails.filterData.sortArray[3].display",
+            "loaderText","attentionBannerText","logindata.formSubtitle",
+        "logindata.formTitle",
+        "logindata.mainText","formSetting.buttonArray[0].buttonText"
   ];
   constructor(private dialog: MatDialog) {}
 

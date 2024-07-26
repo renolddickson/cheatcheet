@@ -1,10 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-interface KeyPathsResult {
-  detail: string[][];
-  sampleData: string[][];
-}
+
 @Component({
   selector: 'app-product-details-tp',
   templateUrl: './product-details-tp.component.html',
@@ -15,10 +12,10 @@ export class ProductDetailsTpComponent {
 
   converter!: FormGroup;
   result: string[][] = [];
-  sampleData: string[][] = [];
   selectedKeys: boolean[][] = [];
   allComplete: boolean[] = [];
   jsonData: any[] = []; // Store parsed JSON data here
+  autoCheckPaths: string[] = []; // Initialize with the paths you want to auto-check
 
   constructor(private dialog: MatDialog) {}
 
@@ -35,30 +32,29 @@ export class ProductDetailsTpComponent {
       this.jsonData = JSON.parse(jsonDataString);
       this.getKeyPathsFromDetails(this.jsonData).then(res => {
         this.result = res['detail'];
-        this.sampleData = res['sampleData']
         this.initializeSelections();
         const dialogRef = this.dialog.open(this.selectDialog);
       });
     }
   }
 
-  async getKeyPathsFromDetails(sections: any[]): Promise<KeyPathsResult> {
+  async getKeyPathsFromDetails(sections: any[]): Promise<{ detail: string[][], sampleData: string[][] }> {
     let result: any[] = [];
-    let sampleResult:any[] =[];
-    for (const section of sections) {
+    let sampleResult: any[] = [];
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
       if (section.details) {
         const keyPaths = await this.getKeyPaths(section.details);
         result.push(keyPaths);
       }
-      if (section.sampleData) {
-        const keyPaths = await this.getKeyPaths(section.sampleData);
-        sampleResult.push(keyPaths);
+      if (i === 0 || i === 4) {
+        if (section.sampleData) {
+          const sampleKeyPaths = await this.getKeyPaths(section.sampleData);
+          sampleResult.push(sampleKeyPaths);
+        }
       }
     }
-    const resData:KeyPathsResult = {detail:result,sampleData:sampleResult};
-    console.log(resData);
-    
-    return resData;
+    return { detail: result, sampleData: sampleResult };
   }
 
   getKeyPaths(obj: any, parentKey: string = ''): string[] {
@@ -68,13 +64,13 @@ export class ProductDetailsTpComponent {
         const value = obj[key];
         const newKey = parentKey ? `${parentKey}.${key}` : key;
         if (key.toLowerCase().includes('color') ||
-            key.toLowerCase().includes('images') ||
-            key.toLowerCase().includes('imageurl') ||
-            key.toLowerCase().includes('fontfamily') ||
-            key.toLowerCase().includes('fontstyle') ||
-            typeof value === 'boolean' ||
-            typeof value === 'number' ||
-            obj.hasOwnProperty('en')) {
+          key.toLowerCase().includes('images') ||
+          key.toLowerCase().includes('imageurl') ||
+          key.toLowerCase().includes('fontfamily') ||
+          key.toLowerCase().includes('fontstyle') ||
+          typeof value === 'boolean' ||
+          typeof value === 'number' ||
+          obj.hasOwnProperty('en')) {
           continue;
         }
         if (Array.isArray(value)) {
@@ -96,8 +92,12 @@ export class ProductDetailsTpComponent {
   }
 
   initializeSelections() {
-    this.selectedKeys = this.result.map(keyArray => keyArray.map(() => false));
-    this.allComplete = this.result.map(() => false);
+    this.selectedKeys = this.result.map(keyArray =>
+      keyArray.map(key => this.autoCheckPaths.includes(key))
+    );
+    this.allComplete = this.selectedKeys.map(keysArray =>
+      keysArray.every(selected => selected)
+    );
   }
 
   isSelected(key: string, i: number): boolean {
@@ -122,7 +122,7 @@ export class ProductDetailsTpComponent {
   }
 
   confirmSelection() {
-    this.dialog.closeAll()
+    this.dialog.closeAll();
     const selectedPaths: string[][] = [];
     this.selectedKeys.forEach((keyArray, i) => {
       const selected = keyArray
@@ -143,11 +143,49 @@ export class ProductDetailsTpComponent {
       });
     });
 
+    // Modify the JSON data according to the given rules
+    this.modifyJsonData();
+
     // Set the updated JSON data in the converter form
     this.converter.patchValue({ converted: JSON.stringify(this.jsonData, null, 2) });
 
     console.log(this.jsonData); // Log the updated JSON data
     // Perform further actions with selectedPaths
+  }
+
+  modifyJsonData() {
+    for (let i = 0; i < this.jsonData.length; i++) {
+      if (i === 0 || i === 4) {
+        // Modify 'en' for section 1 and 5 details
+        this.updateTranslations(this.jsonData[i].details, ['en']);
+        // Modify 'en', 'ta', 'ml', 'hi' for section 1 and 5 sample data
+        if (this.jsonData[i].sampleData) {
+          this.updateTranslations(this.jsonData[i].sampleData, ['en', 'ta', 'ml', 'hi']);
+        }
+      } else if (i >= 1 && i <= 3) {
+        // Modify 'en', 'ta', 'ml', 'hi' for details of sections 2, 3, 4
+        this.updateTranslations(this.jsonData[i].details, ['en', 'ta', 'ml', 'hi']);
+      }
+    }
+  }
+
+  updateTranslations(obj: any, languages: string[]) {
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const value = obj[key];
+        if (typeof value === 'string') {
+          languages.forEach(lang => {
+            obj[key] = { ...obj[key], [lang]: value };
+          });
+        } else if (Array.isArray(value)) {
+          value.forEach((item, index) => {
+            this.updateTranslations(item, languages);
+          });
+        } else if (typeof value === 'object' && value !== null) {
+          this.updateTranslations(value, languages);
+        }
+      }
+    }
   }
 
   // Helper function to set value at given path in object
@@ -180,6 +218,7 @@ export class ProductDetailsTpComponent {
       }
     }
   }
+
   getPathValue(obj: any, path: string[]): any {
     let current = obj;
     for (const key of path) {
@@ -202,6 +241,7 @@ export class ProductDetailsTpComponent {
     }
     return current;
   }
+
   getTooltipContent(sectionIndex: number, key: string): string {
     const path = key.split('.');
     const value = this.getPathValue(this.jsonData[sectionIndex].details, path);
@@ -214,3 +254,4 @@ export class ProductDetailsTpComponent {
     }
   }
 }
+

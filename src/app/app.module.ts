@@ -22,6 +22,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     BrowserAnimationsModule,
     HttpClientModule,
     MatSnackBarModule,
+    HttpClientModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),

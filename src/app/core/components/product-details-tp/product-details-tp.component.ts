@@ -1,6 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ApiService } from '../../services/API/api.service';
 
 @Component({
   selector: 'app-product-details-tp',
@@ -17,7 +18,7 @@ export class ProductDetailsTpComponent {
   jsonData: any[] = []; // Store parsed JSON data here
   autoCheckPaths: string[] = []; // Initialize with the paths you want to auto-check
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private translationService: ApiService) {}
 
   ngOnInit(): void {
     this.converter = new FormGroup({
@@ -144,50 +145,50 @@ export class ProductDetailsTpComponent {
     });
 
     // Modify the JSON data according to the given rules
-    this.modifyJsonData();
-
-    // Set the updated JSON data in the converter form
-    this.converter.patchValue({ converted: JSON.stringify(this.jsonData, null, 2) });
-
-    console.log(this.jsonData); // Log the updated JSON data
-    // Perform further actions with selectedPaths
+    this.modifyJsonData().then(() => {
+      // Set the updated JSON data in the converter form
+      this.converter.patchValue({ converted: JSON.stringify(this.jsonData, null, 2) });
+      console.log(this.jsonData); // Log the updated JSON data
+    });
   }
 
-  modifyJsonData() {
+  async modifyJsonData() {
     for (let i = 0; i < this.jsonData.length; i++) {
       if (i === 0 || i === 4) {
         // Modify 'en' for section 1 and 5 details
-        this.updateTranslations(this.jsonData[i].details, ['en']);
+        await this.updateTranslations(this.jsonData[i].details, ['en']);
         // Modify 'en', 'ta', 'ml', 'hi' for section 1 and 5 sample data
         if (this.jsonData[i].sampleData) {
-          this.updateTranslations(this.jsonData[i].sampleData, ['en', 'ta', 'ml', 'hi']);
+          await this.updateTranslations(this.jsonData[i].sampleData, ['en', 'ta', 'ml', 'hi']);
         }
       } else if (i >= 1 && i <= 3) {
         // Modify 'en', 'ta', 'ml', 'hi' for details of sections 2, 3, 4
-        this.updateTranslations(this.jsonData[i].details, ['en', 'ta', 'ml', 'hi']);
+        await this.updateTranslations(this.jsonData[i].details, ['en', 'ta', 'ml', 'hi']);
       }
     }
   }
 
-  updateTranslations(obj: any, languages: string[]) {
+  async updateTranslations(obj: any, languages: string[]) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         const value = obj[key];
         if (typeof value === 'string') {
-          languages.forEach(lang => {
-            obj[key] = { ...obj[key], [lang]: value };
+          const translations = await Promise.all(
+            languages.map(lang => this.translationService.translate(value, lang))
+          );
+          languages.forEach((lang, index) => {
+            obj[key] = { ...obj[key], [lang]: translations[index] };
           });
         } else if (Array.isArray(value)) {
-          value.forEach((item, index) => {
-            this.updateTranslations(item, languages);
-          });
+          for (let item of value) {
+            await this.updateTranslations(item, languages);
+          }
         } else if (typeof value === 'object' && value !== null) {
-          this.updateTranslations(value, languages);
+          await this.updateTranslations(value, languages);
         }
       }
     }
   }
-
   // Helper function to set value at given path in object
   setPathValue(obj: any, path: string[], value: any = 'en') {
     if (path.length === 1) {

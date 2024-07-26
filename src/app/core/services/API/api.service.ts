@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Database, set, ref, update, onValue } from '@angular/fire/database';
 import {
@@ -14,8 +15,24 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
+  private libreTranslateUrl = 'https://libretranslate.com/translate';
   data$!: Observable<any>;
-  constructor(private db: Database, private fs: Firestore) {}
+  constructor(private db: Database, private fs: Firestore,private http:HttpClient) {
+  }
+  async translate(text: string, targetLang: string): Promise<string> {
+    try {
+      const response: any = await this.http.post(this.libreTranslateUrl, {
+        q: text,
+        source: 'en',
+        target: targetLang,
+        format: 'text'
+      }).toPromise();
+      return response.translatedText;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return text; // Fallback to the original text in case of error
+    }
+  }
   async postData(id: string, data: any): Promise<void> {
     // return set(ref(this.db, id + '/' + data.title), data);
     const send_data = collection(this.fs, id);

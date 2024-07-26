@@ -27,7 +27,22 @@ export class TranslatePathComponent {
             "productListDetails.filterData.sortArray[3].display",
             "loaderText","attentionBannerText","logindata.formSubtitle",
         "logindata.formTitle",
-        "logindata.mainText","formSetting.buttonArray[0].buttonText"
+        "logindata.mainText","formSetting.buttonArray[0].buttonText",
+        "availableText",
+            "manyInStockText",
+            "outOfStockText",
+            "locationNotAvailableText",
+            "preOrderAvailableText",
+            "menuNotAvailableText",
+            "unavailableText",
+            "notifyMeButtonText",
+            "cartButtonText",
+            "orderButtonText",
+            "buyNowButtonText",
+            "inclusiveTaxTitle",
+            "instructionText",
+            "wishlistButtonText",
+            "discountTitle"
   ];
   constructor(private dialog: MatDialog) {}
 

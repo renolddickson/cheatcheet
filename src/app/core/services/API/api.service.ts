@@ -9,29 +9,27 @@ import {
   doc,
   updateDoc,
 } from '@angular/fire/firestore';
+import { TranslateService } from '@ngx-translate/core';
 import { addDoc } from 'firebase/firestore';
-import { Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private libreTranslateUrl = 'https://libretranslate.com/translate';
   data$!: Observable<any>;
-  constructor(private db: Database, private fs: Firestore,private http:HttpClient) {
+  constructor(private db: Database, private fs: Firestore,private http:HttpClient,private translate: TranslateService) {
   }
-  async translate(text: string, targetLang: string): Promise<string> {
-    try {
-      const response: any = await this.http.post(this.libreTranslateUrl, {
-        q: text,
-        source: 'en',
-        target: targetLang,
-        format: 'text'
-      }).toPromise();
-      return response.translatedText;
-    } catch (error) {
-      console.error('Translation error:', error);
-      return text; // Fallback to the original text in case of error
-    }
+  translateObject(input: any, targetLang: string): Observable<any> {
+    const keys = Object.keys(input);
+    const translationObservables = keys.map(key =>
+      this.translate.get(input[key], { lang: targetLang }).pipe(
+        map(translatedValue => ({ [key]: translatedValue }))
+      )
+    );
+
+    return forkJoin(translationObservables).pipe(
+      map(translations => translations.reduce((acc, cur) => ({ ...acc, ...cur }), {}))
+    );
   }
   async postData(id: string, data: any): Promise<void> {
     // return set(ref(this.db, id + '/' + data.title), data);

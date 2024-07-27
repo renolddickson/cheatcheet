@@ -173,12 +173,12 @@ export class ProductDetailsTpComponent {
       if (obj.hasOwnProperty(key)) {
         const value = obj[key];
         if (typeof value === 'string') {
-          const translations = await Promise.all(
-            languages.map(lang => this.translationService.translate(value, lang))
-          );
-          languages.forEach((lang, index) => {
-            obj[key] = { ...obj[key], [lang]: translations[index] };
-          });
+          // const translations = await Promise.all(
+          //   // languages.map(lang => this.translationService.translate(value, lang))
+          // );
+          // languages.forEach((lang, index) => {
+          //   obj[key] = { ...obj[key], [lang]: translations[index] };
+          // });
         } else if (Array.isArray(value)) {
           for (let item of value) {
             await this.updateTranslations(item, languages);

@@ -32,8 +32,9 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FontChangeComponent } from './components/font-change/font-change.component';
 import { ProductDetailsTpComponent } from './components/product-details-tp/product-details-tp.component';
+import { RecentlyvpTranslateComponent } from './components/recentlyvp-translate/recentlyvp-translate.component';
 @NgModule({
-  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent, FontChangeComponent, ProductDetailsTpComponent],
+  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent, FontChangeComponent, ProductDetailsTpComponent, RecentlyvpTranslateComponent],
 
   imports: [
     CommonModule,

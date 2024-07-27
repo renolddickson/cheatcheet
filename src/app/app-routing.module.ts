@@ -9,6 +9,7 @@ import { AwstokenComponent } from './core/components/awstoken/awstoken.component
 import { TranslatePathComponent } from './core/components/translate-path/translate-path.component';
 import { FontChangeComponent } from './core/components/font-change/font-change.component';
 import { ProductDetailsTpComponent } from './core/components/product-details-tp/product-details-tp.component';
+import { RecentlyvpTranslateComponent } from './core/components/recentlyvp-translate/recentlyvp-translate.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
@@ -47,6 +48,10 @@ const routes: Routes = [
   {
     path: 'fontfamily',
     component: FontChangeComponent
+  },
+  {
+    path: 'sectiontranslation',
+    component: RecentlyvpTranslateComponent
   }
 ];
 

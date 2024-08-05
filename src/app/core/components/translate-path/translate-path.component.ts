@@ -26,7 +26,7 @@ export class TranslatePathComponent {
             "productListDetails.filterData.sortArray[2].display",
             "productListDetails.filterData.sortArray[3].display",
             "loaderText","attentionBannerText","logindata.formSubtitle",
-        "logindata.formTitle",
+        "logindata.formTitle","logindata.subText",
         "logindata.mainText","formSetting.buttonArray[0].buttonText",
         "availableText",
             "manyInStockText",

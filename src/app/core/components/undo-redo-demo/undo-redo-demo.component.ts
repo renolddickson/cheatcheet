@@ -110,7 +110,7 @@ onCheck(){
     if ((event.action === 'insert' && type === 'undo')||(event.action === 'delete' && type === 'redo')) {
       delete target[key];
     } else if ((event.action === 'delete' && type === 'undo') || (event.action === 'insert' && type === 'redo')) {
-      target[key] = event.oldValue;
+      target[key] = event.newValue || event.oldValue;
     } else if (event.action === 'update') {
       target[key] = (type === 'undo') ? event.oldValue : event.newValue;
     }

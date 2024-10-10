@@ -1,0 +1,46 @@
+<div class="container" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" style="min-height: 100vh;"
+  [formGroup]="converter" fxLayout="column" fxLayoutGap="30px">
+  <div fxLayout="row" fxLayoutGap="10px">
+    <button mat-icon-button [disabled]="undoStack.length<=0" (click)="undo()"><mat-icon>undo</mat-icon></button>
+    <button mat-icon-button [disabled]="redoStack.length<=0" (click)="redo()"><mat-icon>redo</mat-icon></button>
+  </div>
+  <div class="textBox" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="40px" style="width: 100%;">
+    <div class="left" fxFlex="50%" fxFlex.lt-md="100%" fxLayoutAlign="center center">
+      <div class="group">
+        <textarea placeholder="Enter normal token" #left type="search" formControlName="normal"
+          class="input"></textarea>
+      </div>
+    </div>
+    <!-- <div class="right" fxFlex="50%" fxFlex.lt-md="100%">
+      <div class="group">
+        <textarea placeholder="Converted token" #right type="search" formControlName="converted"
+          class="input"></textarea>
+      </div>
+    </div> -->
+    <div fxLayout="column" style="width: 80%;padding: 20px;margin-bottom: 25px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Path</th>
+            <th>Old Value</th>
+            <th>New Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of undoStack">
+            <td>{{ log.action }}</td>
+            <td>{{ log.path }}</td>
+            <td>{{ log.oldValue | json }}</td>
+            <td *ngIf="log.newValue; else emptyValue">{{ log.newValue | json }}</td>
+            <ng-template #emptyValue><td>-</td></ng-template>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <button class="btn" [disabled]="!converter.get('normal')?.value" (click)="onCheck()"><i class="animation"></i>CHANGE<i class="animation"></i>
+    </button>
+  </div>
+</div>

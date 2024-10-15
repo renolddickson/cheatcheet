@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+
+export interface JsonAction {
+  action: 'insert' | 'update' | 'delete';
+  path: string;
+  oldValue: any;
+  newValue: any;
+}
 
 @Component({
   selector: 'app-undo-redo-demo',
@@ -8,8 +15,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class UndoRedoDemoComponent {
   normalJson!: FormControl;
-  undoStack: any[] = [];
-  redoStack: any[] = [];
+  undoStack: JsonAction[][] = [];
+  redoStack: JsonAction[][] = [];
   currentJson: any = {
     tag: "h1",
     style: {
@@ -19,9 +26,10 @@ export class UndoRedoDemoComponent {
     }
   };
   tempJson: any = {};
+  tempAction: JsonAction[] = []; // Global array to store all changes before onCheck
 
   ngOnInit(): void {
-      this.normalJson = new FormControl(JSON.stringify(this.currentJson, null, 2))
+    this.normalJson = new FormControl(JSON.stringify(this.currentJson, null, 2));
   }
 
   onCheck() {
@@ -43,44 +51,41 @@ export class UndoRedoDemoComponent {
 
   // Track changes and add to the undo stack
   diffJson(oldJson: any, newJson: any, path = '') {
-    const tempAction: any[] = []; // Store actions temporarily
-  
     for (let key in oldJson) {
       const currentPath = path ? `${path}.${key}` : key;
-  
+
       if (!(key in newJson)) {
-        tempAction.push({ action: 'delete', path: currentPath, oldValue: oldJson[key], newValue: null });
+        this.tempAction.push({ action: 'delete', path: currentPath, oldValue: oldJson[key], newValue: null });
       } else if (typeof oldJson[key] === 'object' && typeof newJson[key] === 'object') {
         this.diffJson(oldJson[key], newJson[key], currentPath); // Recursive call for nested objects
       } else if (oldJson[key] !== newJson[key]) {
-        tempAction.push({ action: 'update', path: currentPath, oldValue: oldJson[key], newValue: newJson[key] });
+        this.tempAction.push({ action: 'update', path: currentPath, oldValue: oldJson[key], newValue: newJson[key] });
       }
     }
-  
+
     for (let key in newJson) {
       const currentPath = path ? `${path}.${key}` : key;
-  
+
       if (!(key in oldJson)) {
-        tempAction.push({ action: 'insert', path: currentPath, oldValue: null, newValue: newJson[key] });
+        this.tempAction.push({ action: 'insert', path: currentPath, oldValue: null, newValue: newJson[key] });
       }
-    }
-  
-    // After collecting all changes, log the entire batch of actions as one group
-    if (tempAction.length > 0) {
-      this.logAction(tempAction);
     }
   }
 
-  // Log action for undo/redo functionality
-  logAction(actionArray: any[]) {
-    this.undoStack.push(actionArray);
-    this.redoStack = []; // Clear redo stack when a new change is made
+  // Log action for undo/redo functionality and clear tempAction
+  logAction() {
+    if (this.tempAction.length > 0) {
+      this.undoStack.push([...this.tempAction]); // Store a copy of the tempAction
+      this.redoStack = []; // Clear redo stack when a new change is made
+      this.tempAction = []; // Clear tempAction for future changes
+    }
   }
 
   // Replace current JSON and track changes
   replaceJson(newJson: string) {
     const parsedJson = JSON.parse(newJson);
     this.diffJson(this.currentJson, parsedJson); // Track differences
+    this.logAction(); // Log all collected changes in tempAction at once
     this.tempJson = JSON.parse(JSON.stringify(parsedJson)); // TempJson stores a deep copy
     this.currentJson = JSON.parse(JSON.stringify(parsedJson));
   }
@@ -89,24 +94,28 @@ export class UndoRedoDemoComponent {
   undo() {
     if (this.undoStack.length === 0) return;
     const lastActionArray = this.undoStack.pop();
-    lastActionArray.forEach((lastAction: any) => {
-      this.applyUndoRedoAction(lastAction, 'undo');
-    });
-    this.redoStack.push(lastActionArray); // Push to redo stack
+    if (lastActionArray) {
+      lastActionArray.forEach((lastAction: JsonAction) => {
+        this.applyUndoRedoAction(lastAction, 'undo');
+      });
+      this.redoStack.push(lastActionArray); // Push to redo stack
+    }
   }
 
   // Redo function to apply the last undone action
   redo() {
     if (this.redoStack.length === 0) return;
     const lastActionArray = this.redoStack.pop();
-    lastActionArray.forEach((lastAction: any) => {
-      this.applyUndoRedoAction(lastAction, 'redo');
-    });
-    this.undoStack.push(lastActionArray); // Push back to undo stack
+    if (lastActionArray) {
+      lastActionArray.forEach((lastAction: JsonAction) => {
+        this.applyUndoRedoAction(lastAction, 'redo');
+      });
+      this.undoStack.push(lastActionArray); // Push back to undo stack
+    }
   }
 
   // Apply undo/redo based on action type
-  applyUndoRedoAction(event: any, type: 'undo' | 'redo') {
+  applyUndoRedoAction(event: JsonAction, type: 'undo' | 'redo') {
     let pathArray = event.path.split('.');
     let target = this.currentJson;
     for (let i = 0; i < pathArray.length - 1; i++) {

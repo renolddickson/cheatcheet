@@ -8,10 +8,9 @@ import { CanDeactivateGuard } from './core/services/Guard/can-deactivate.guard';
 import { AwstokenComponent } from './core/components/awstoken/awstoken.component';
 import { TranslatePathComponent } from './core/components/translate-path/translate-path.component';
 import { FontChangeComponent } from './core/components/font-change/font-change.component';
-import { ProductDetailsTpComponent } from './core/components/product-details-tp/product-details-tp.component';
-import { RecentlyvpTranslateComponent } from './core/components/recentlyvp-translate/recentlyvp-translate.component';
 import { JsonMigraterComponent } from './core/components/json-migrater/json-migrater.component';
 import { UndoRedoDemoComponent } from './core/components/undo-redo-demo/undo-redo-demo.component';
+import { AngulatToHtmlComponent } from './core/components/angulat-to-html/angulat-to-html.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
@@ -56,8 +55,8 @@ const routes: Routes = [
     component: FontChangeComponent
   },
   {
-    path: 'sectiontranslation',
-    component: RecentlyvpTranslateComponent
+    path: 'angulartohtml',
+    component: AngulatToHtmlComponent
   }
 ];
 

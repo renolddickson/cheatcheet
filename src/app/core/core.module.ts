@@ -31,12 +31,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FontChangeComponent } from './components/font-change/font-change.component';
-import { ProductDetailsTpComponent } from './components/product-details-tp/product-details-tp.component';
-import { RecentlyvpTranslateComponent } from './components/recentlyvp-translate/recentlyvp-translate.component';
 import { JsonMigraterComponent } from './components/json-migrater/json-migrater.component';
 import { UndoRedoDemoComponent } from './components/undo-redo-demo/undo-redo-demo.component';
+import { AngulatToHtmlComponent } from './components/angulat-to-html/angulat-to-html.component';
 @NgModule({
-  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent, FontChangeComponent, ProductDetailsTpComponent, RecentlyvpTranslateComponent, JsonMigraterComponent, UndoRedoDemoComponent],
+  declarations: [MainComponent, CheatsheetComponent, AddCodeComponent, DialogComponent, AwstokenComponent,TranslatePathComponent, FontChangeComponent, JsonMigraterComponent, UndoRedoDemoComponent, AngulatToHtmlComponent],
 
   imports: [
     CommonModule,

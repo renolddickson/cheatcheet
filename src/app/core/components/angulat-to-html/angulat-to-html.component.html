@@ -1,0 +1,42 @@
+<div fxLayout="column" fxLayoutAlign="center center">
+  <h1 style="margin-bottom: 30px;">Angular to HTML</h1>
+<mat-accordion style="width: 80%;">
+  <!-- Step 1: Sample JSON Input -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Enter Input Data</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div fxLayout="column" fxLayoutGap="30px">
+      <div class="group" fxLayoutAlign="center center" fxLayoutGap="50px">
+        <div class="textarea-container">
+          <button mat-icon-button color="accent" class="copy_btn" (click)="enterSampleJson()"><mat-icon>keyboard_double_arrow_down</mat-icon></button>
+          <textarea placeholder="Enter Json(details)" #left type="search" [(ngModel)]="sampleJson"
+          class="input"></textarea>
+        </div>
+        <div class="textarea-container">
+          <button mat-icon-button color="accent" class="copy_btn" (click)="enterSampleCode()"><mat-icon>keyboard_double_arrow_down</mat-icon></button>
+          <textarea placeholder="Enter Html" #left type="search" [(ngModel)]="sampleCode"
+          class="input"></textarea>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="center center" style="width: 100%;">
+        <button mat-raised-button color="primary" (click)="processJson()">
+          Convert
+        </button>
+      </div>
+    </div>
+  </mat-expansion-panel>
+
+  <!-- Step 3: Output Result -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>View Output Data</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div>
+      <pre><code [highlight]="outputCode"></code></pre>
+      <button mat-raised-button color="accent" (click)="reset()">Reset</button>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+</div>
+

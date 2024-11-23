@@ -9,12 +9,12 @@
     <div fxLayout="column" fxLayoutGap="30px">
       <div class="group" fxLayoutAlign="center center" fxLayoutGap="50px">
         <div class="textarea-container">
-          <button mat-icon-button color="accent" class="copy_btn" (click)="enterSampleJson()"><mat-icon>keyboard_double_arrow_down</mat-icon></button>
+          <button mat-button color="accent" class="copy_btn" (click)="enterSampleJson()">Insert sample <mat-icon>keyboard_double_arrow_down</mat-icon></button>
           <textarea placeholder="Enter Json(details)" #left type="search" [(ngModel)]="sampleJson"
           class="input"></textarea>
         </div>
         <div class="textarea-container">
-          <button mat-icon-button color="accent" class="copy_btn" (click)="enterSampleCode()"><mat-icon>keyboard_double_arrow_down</mat-icon></button>
+          <button mat-button color="accent" class="copy_btn" (click)="enterSampleCode()">Insert sample <mat-icon>keyboard_double_arrow_down</mat-icon></button>
           <textarea placeholder="Enter Html" #left type="search" [(ngModel)]="sampleCode"
           class="input"></textarea>
         </div>

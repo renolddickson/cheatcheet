@@ -134,8 +134,7 @@ export class AngulatToHtmlComponent {
           const styleObject = ngStyleNode.getAttribute('ngStyle');
           if (styleObject) {
               const styles = evaluateExpression(styleObject, data) as Record<string, string>;
-              console.log(styles);
-              
+
               if (styles && typeof styles === 'object' && Object.keys(styles).length > 0) {
                   const className = `dynamic-style-${Math.random().toString(36).substr(2, 8)}`;
                   ngStyleNode.classList.add(className);

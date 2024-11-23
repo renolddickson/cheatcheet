@@ -26,7 +26,12 @@ export class AngulatToHtmlComponent {
         { "name": "Item 1", "price": 10 },
         { "name": "Item 2", "price": 20 }
       ],
-      "isVisible": true
+      "isVisible": true,
+      "styles":{
+        "normal_color":"black",
+        "medium_color":"red",
+        "small_color":"blue"
+      }
     }`;
   }
 
@@ -42,9 +47,9 @@ export class AngulatToHtmlComponent {
         </ul>
         <p *ngIf="isVisible">This content is visible.</p>
         <div
-          ngStyle="{ color: styles.default.color, fontSize: styles.default.fontSize }"
-          ngStyle.lt-md="{ color: styles.lt-md.color, fontSize: styles.lt-md.fontSize }"
-          ngStyle.gt-md="{ color: styles.gt-md.color, fontSize: styles.gt-md.fontSize }"
+          ngStyle="{ color: styles.normal_color}"
+          ngStyle.lt-md="{ color: styles.medium_color}"
+          ngStyle.gt-md="{ color: styles.small_color}"
         >
           Responsive styled content
         </div>
@@ -59,13 +64,15 @@ export class AngulatToHtmlComponent {
 
   compileAngularTemplate(template: string, data: Record<string, any>): string {
     // Helper to evaluate expressions safely
-    const evaluateExpression = (expression: string, context: Record<string, any>) => {
+    const evaluateExpression = (expression: string, context: Record<string, any>): any => {
       try {
-        return new Function('with(this) { return ' + expression + '}').call(context);
-      } catch {
-        return '';
+          // Use a Function constructor to evaluate in the context of provided data
+          return new Function('with(this) { return ' + expression + '}').call(context);
+      } catch (error) {
+          console.error(`Error evaluating expression: "${expression}"`, error);
+          return {};
       }
-    };
+  };
     template = template.replace(/\*ngFor/g, 'ngFor').replace(/\*ngIf/g, 'ngIf');
     // Parse the template string into a DOM structure
     const parser = new DOMParser();
@@ -121,27 +128,56 @@ export class AngulatToHtmlComponent {
       'gt-md': '(min-width: 769px)',
     };
     const styleBlocks: string[] = [];
-    doc.querySelectorAll('[ngStyle]').forEach((ngStyleNode) => {
-      const ngStyleElement = ngStyleNode as HTMLElement;
-      const styleObject = ngStyleElement.getAttribute('ngStyle');
-      if (styleObject) {
-        const styles = evaluateExpression(styleObject, data); // Evaluate the style object
-        const className = `dynamic-style-${Math.random().toString(36).substr(2, 8)}`;
-        ngStyleElement.classList.add(className); // Add a unique class
-        console.log(styles);
-
-        // Generate the style block for the class
-        styleBlocks.push(`
-            .${className} {
-                ${Object.entries(styles)
-            .map(([key, value]) => `${key}: ${value};`)
-            .join(' ')}
-            }
-        `);
-        ngStyleElement.removeAttribute('ngStyle'); // Remove the ngStyle attribute
+    doc.querySelectorAll('[ngStyle], [ngStyle\\.lt-md], [ngStyle\\.gt-md]').forEach((ngStyleNode) => {
+      if (ngStyleNode instanceof HTMLElement) {
+          // Handle generic ngStyle
+          const styleObject = ngStyleNode.getAttribute('ngStyle');
+          if (styleObject) {
+              const styles = evaluateExpression(styleObject, data) as Record<string, string>;
+              console.log(styles);
+              
+              if (styles && typeof styles === 'object' && Object.keys(styles).length > 0) {
+                  const className = `dynamic-style-${Math.random().toString(36).substr(2, 8)}`;
+                  ngStyleNode.classList.add(className);
+  
+                  styleBlocks.push(`
+                      .${className} {
+                          ${Object.entries(styles)
+                              .map(([key, value]) => `${key}: ${value};`)
+                              .join(' ')}
+                      }
+                  `);
+              }
+              ngStyleNode.removeAttribute('ngStyle');
+          }
+  
+          // Handle responsive ngStyle.<breakpoint>
+          Object.entries(responsiveBreakpoints).forEach(([suffix, mediaQuery]) => {
+              const directive = `ngStyle.${suffix}`;
+              if (ngStyleNode.hasAttribute(directive)) {
+                  const responsiveStyleObject = ngStyleNode.getAttribute(directive);
+                  if (responsiveStyleObject) {
+                      const responsiveStyles = evaluateExpression(responsiveStyleObject, data) as Record<string, string>;
+                      if (responsiveStyles && typeof responsiveStyles === 'object' && Object.keys(responsiveStyles).length > 0) {
+                          const responsiveClassName = `responsive-${Math.random().toString(36).substr(2, 8)}`;
+                          ngStyleNode.classList.add(responsiveClassName);
+  
+                          styleBlocks.push(`
+                              @media ${mediaQuery} {
+                                  .${responsiveClassName} {
+                                      ${Object.entries(responsiveStyles)
+                                          .map(([key, value]) => `${key}: ${value};`)
+                                          .join(' ')}
+                                  }
+                              }
+                          `);
+                      }
+                      ngStyleNode.removeAttribute(directive);
+                  }
+              }
+          });
       }
-    });
-
+  });
     // Append generated styles to the document
     if (styleBlocks.length > 0) {
       const styleTag = document.createElement('style');

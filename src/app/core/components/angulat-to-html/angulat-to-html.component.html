@@ -51,7 +51,7 @@
  <div *ngIf="outputCode.length > 0" fxLayout="column" fxLayoutAlign="center center" style="margin:30px 0;">
   <h2>Rendered HTML Template</h2>
   <div class="container-with-border" *ngIf="outputCode.length > 0" style="width: 100%; margin-top: 20px;">
-    <div class="rendered-template" [innerHTML]="outputCode"></div>
+    <div class="rendered-template" [innerHTML]="sanitizedCode"></div>
   </div>
  </div>
 

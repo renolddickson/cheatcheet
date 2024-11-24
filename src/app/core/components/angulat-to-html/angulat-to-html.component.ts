@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 type Breakpoint =
   | 'xs'
   | 'sm'
@@ -25,9 +26,20 @@ export class AngulatToHtmlComponent {
   sampleCode: string = '';
   outputCode: string = '';
 
+  sanitizedCode!: SafeHtml;
+
+  constructor(private sanitizer: DomSanitizer) {
+
+  }
+
+  sanitizeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
   processJson() {
     try {
       this.outputCode = this.compileAngularTemplate(this.sampleCode, JSON.parse(this.sampleJson));
+      this.sanitizedCode = this.sanitizeHtml(this.outputCode);
+      console.log('this.outputCode',this.outputCode);
     } catch (error) {
       alert('Invalid Data format ' + error);
     }

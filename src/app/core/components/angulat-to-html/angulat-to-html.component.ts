@@ -56,7 +56,6 @@ export class AngulatToHtmlComponent {
       const parsedJson = JSON.parse(this.sampleJson);
       this.outputCode = this.compileAngularTemplate(this.sampleCode, parsedJson);
       this.sanitizedCode = this.sanitizeHtml(this.outputCode);
-      console.log('this.outputCode', this.outputCode);
     } catch (error) {
       alert('Invalid Data format ' + error);
     }
@@ -116,9 +115,12 @@ export class AngulatToHtmlComponent {
     this.interpolateText(doc, data);
 
     const globalStyles = this.collectStyles(doc, data);
+    this.processFxLayoutDirectives(doc, globalStyles);
+
     const styleBlocks = this.generateStyleBlocks(globalStyles);
 
     if (styleBlocks.length > 0) {
+
       this.appendStylesToDocument(doc, styleBlocks);
     }
 
@@ -134,7 +136,6 @@ export class AngulatToHtmlComponent {
     try {
       return new Function('with(this) { return ' + expression + '}').call(context);
     } catch (error) {
-      console.error(`Error evaluating expression: "${expression}"`, error);
       return null;
     }
   }
@@ -240,12 +241,12 @@ export class AngulatToHtmlComponent {
     });
   }
 
+
   private generateDynamicClassName(): string {
-    const timestamp = Date.now().toString(36).substr(2, 8);
+    const timestamp = Date.now().toString(36);
     const randomPart = Math.random().toString(36).substr(2, 8);
     return `dynamic-${timestamp}-${randomPart}`;
-}
-
+  }
 
   private generateCssRule(className: string, styles: Record<string, any>): string {
     return `.${className} { ${Object.entries(styles)
@@ -256,14 +257,14 @@ export class AngulatToHtmlComponent {
   private generateStyleBlocks(globalStyles: Record<string, string[]>): string[] {
     return Object.entries(globalStyles)
       .map(([breakpoint, styles]) => {
-        if (styles.length === 0) return ''; // Skip empty styles
+        if (styles.length === 0) return '';
         const mediaQuery =
-          breakpoint in this.responsiveBreakpoints && this.responsiveBreakpoints[breakpoint as Breakpoint]
-            ? `@media ${this.responsiveBreakpoints[breakpoint as Breakpoint]}`
-            : '';
-        return `${mediaQuery} {\n${styles.join('\n')}\n}`;
+        breakpoint in this.responsiveBreakpoints && this.responsiveBreakpoints[breakpoint as Breakpoint]
+          ? `@media ${this.responsiveBreakpoints[breakpoint as Breakpoint]}`
+          : '';
+      return `${mediaQuery} {\n${styles.join('\n')}\n}`;
       })
-      .filter(Boolean);
+      .filter(Boolean);  // Filters out empty strings
   }
 
   private appendStylesToDocument(doc: Document, styleBlocks: string[]) {
@@ -271,4 +272,97 @@ export class AngulatToHtmlComponent {
     styleTag.textContent = styleBlocks.join('\n');
     doc.body.appendChild(styleTag);
   }
+
+
+
+  private processFxLayoutDirectives(doc: Document, globalStyles: Record<string, string[]>): void {
+    // Iterate over each relevant node with layout-related directives
+    doc.querySelectorAll('[fxLayout], [fxFlex], [fxLayoutAlign], [fxLayoutGap], [fxShow], [fxHide]').forEach((node) => {
+      const element = node as HTMLElement;
+
+      // Process `fxLayout`
+      const layout = element.getAttribute('fxLayout');
+      if (layout) {
+        element.style.display = 'flex';
+        element.style.flexDirection = layout;
+        element.removeAttribute('fxLayout');
+      }
+
+      // Process `fxLayoutAlign`
+      const layoutAlign = element.getAttribute('fxLayoutAlign');
+      if (layoutAlign) {
+        const [mainAxis, crossAxis] = layoutAlign.split(' ');
+        element.style.justifyContent = this.mapFlexAlignment(mainAxis);
+        element.style.alignItems = this.mapFlexAlignment(crossAxis);
+        element.removeAttribute('fxLayoutAlign');
+      }
+
+      // Process `fxFlex`
+      const flex = element.getAttribute('fxFlex');
+      if (flex) {
+        element.style.flex = flex === 'auto' ? '1 1 auto' : flex;
+        element.removeAttribute('fxFlex');
+      }
+
+      // Process `fxLayoutGap`
+      const layoutGap = element.getAttribute('fxLayoutGap');
+      if (layoutGap) {
+        const isRow = element.style?.flexDirection === 'row' || element.style?.flexDirection === '';
+        const gap: "column-gap" | "row-gap" = isRow ? 'column-gap' : 'row-gap';
+        element.style.gap = layoutGap;
+        element.removeAttribute('fxLayoutGap');
+      }
+      ['fxShow', 'fxHide'].forEach((directive) => {
+        const attrValue = element.getAttribute(directive);
+        if (attrValue !== null) {
+          const isVisible = directive === 'fxShow';
+          const mediaQueries = attrValue.split(' '); // Handle multiple breakpoints
+
+          mediaQueries.forEach((mediaQuery) => {
+            const mediaMatch = this.responsiveBreakpoints[mediaQuery as Breakpoint];
+            if (mediaMatch) {
+              // Generate a unique class name for the element
+              const className = this.generateDynamicClassName();
+              const displayStyle = isVisible ? 'block' : 'none';
+
+              // Generate the CSS rule for the media query
+              const cssRule = `.${className} { display: ${displayStyle} !important; }`;
+
+              // Append this CSS rule to the globalStyles for the specific breakpoint
+              globalStyles[mediaQuery] = globalStyles[mediaQuery] || [];
+              globalStyles[mediaQuery].push(cssRule);
+
+              // Add the generated class name to the element
+              element.classList.add(className);
+            }
+          });
+
+          // Remove the fxShow or fxHide attribute after processing
+          element.removeAttribute(directive);
+        }
+      });
+
+
+    });
+
+  }
+
+
+  updateVisibility(element: HTMLElement, matches: boolean, isVisible: boolean) {
+    element.style.display = matches ? (isVisible ? 'block' : 'none') : 'none';
+  }
+
+
+  private mapFlexAlignment(value: string | undefined): string {
+    switch (value) {
+      case 'start': return 'flex-start';
+      case 'end': return 'flex-end';
+      case 'center': return 'center';
+      case 'space-around': return 'space-around';
+      case 'space-between': return 'space-between';
+      case 'stretch': return 'stretch';
+      default: return 'flex-start'; // Default alignment
+    }
+  }
+
 }

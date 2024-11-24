@@ -1,4 +1,19 @@
 import { Component } from '@angular/core';
+type Breakpoint =
+  | 'xs'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | 'lt-sm'
+  | 'lt-md'
+  | 'lt-lg'
+  | 'lt-xl'
+  | 'gt-xs'
+  | 'gt-sm'
+  | 'gt-md'
+  | 'gt-lg'
+  | 'base';
 
 @Component({
   selector: 'app-angulat-to-html',
@@ -63,24 +78,23 @@ export class AngulatToHtmlComponent {
   }
 
   compileAngularTemplate(template: string, data: Record<string, any>): string {
-    // Helper to evaluate expressions safely
     const evaluateExpression = (expression: string | null, context: Record<string, any>): any => {
       if (!expression) return null;
       try {
         return new Function('with(this) { return ' + expression + '}').call(context);
       } catch (error) {
         console.error(`Error evaluating expression: "${expression}"`, error);
-        return {};
+        return null;
       }
     };
 
+    // Replace shorthand Angular directives
     template = template.replace(/\*ngFor/g, 'ngFor').replace(/\*ngIf/g, 'ngIf');
 
-    // Parse the template string into a DOM structure
     const parser = new DOMParser();
     const doc = parser.parseFromString(template, 'text/html');
 
-    // Process *ngIf
+    // Handle `ngIf` directives
     doc.querySelectorAll('[ngIf]').forEach((ngIfNode) => {
       const condition = ngIfNode.getAttribute('ngIf');
       if (!evaluateExpression(condition, data)) {
@@ -90,7 +104,7 @@ export class AngulatToHtmlComponent {
       }
     });
 
-    // Process *ngFor
+    // Handle `ngFor` directives
     doc.querySelectorAll('[ngFor]').forEach((ngForNode) => {
       const directive = ngForNode.getAttribute('ngFor');
       const match = directive?.match(/let (\w+) of (\w+)/);
@@ -100,7 +114,7 @@ export class AngulatToHtmlComponent {
         const parent = ngForNode.parentElement;
         const fragment = document.createDocumentFragment();
 
-        items.forEach((itemData: Record<string, any>) => {
+        items.forEach((itemData: any) => {
           const clone = ngForNode.cloneNode(true) as HTMLElement;
           clone.removeAttribute('ngFor');
           clone.innerHTML = clone.innerHTML.replace(/{{\s*(.*?)\s*}}/g, (_, expr) => {
@@ -113,7 +127,7 @@ export class AngulatToHtmlComponent {
       }
     });
 
-    // Process Interpolation ({{ ... }})
+    // Handle text interpolation
     doc.querySelectorAll('*').forEach((node) => {
       node.childNodes.forEach((child) => {
         if (child.nodeType === Node.TEXT_NODE) {
@@ -125,12 +139,12 @@ export class AngulatToHtmlComponent {
     });
 
     // Define responsive breakpoints
-    const responsiveBreakpoints = {
-      'xs': '(max-width: 599px)',
-      'sm': '(min-width: 600px) and (max-width: 959px)',
-      'md': '(min-width: 960px) and (max-width: 1279px)',
-      'lg': '(min-width: 1280px) and (max-width: 1919px)',
-      'xl': '(min-width: 1920px)',
+    const responsiveBreakpoints: Record<Breakpoint, string> = {
+      xs: '(max-width: 599px)',
+      sm: '(min-width: 600px) and (max-width: 959px)',
+      md: '(min-width: 960px) and (max-width: 1279px)',
+      lg: '(min-width: 1280px) and (max-width: 1919px)',
+      xl: '(min-width: 1920px)',
       'lt-sm': '(max-width: 599px)',
       'lt-md': '(max-width: 959px)',
       'lt-lg': '(max-width: 1279px)',
@@ -139,79 +153,78 @@ export class AngulatToHtmlComponent {
       'gt-sm': '(min-width: 960px)',
       'gt-md': '(min-width: 1280px)',
       'gt-lg': '(min-width: 1920px)',
+      base: '', // Special case for base styles
     };
 
-    // Store all generated style blocks
-    const styleBlocks: string[] = [];
+    // Collect styles
+    const globalStyles: Record<string, string[]> = {
+      base: [],
+      ...Object.keys(responsiveBreakpoints).reduce((acc, key) => ({ ...acc, [key]: [] }), {}),
+    };
 
-    // Process elements with ngStyle
     doc.querySelectorAll('*').forEach((node) => {
       if (node instanceof HTMLElement) {
-        let combinedStyles: Record<string, string> = {};
-        let baseClassName = '';
-
-        // Generic ngStyle
+        // Process `ngStyle`
         const ngStyle = node.getAttribute('ngStyle');
         if (ngStyle) {
-          const styles = evaluateExpression(ngStyle, data) as Record<string, string>;
+          const styles = evaluateExpression(ngStyle, data);
           if (styles && typeof styles === 'object') {
-            baseClassName = `dynamic-${Math.random().toString(36).substr(2, 8)}`;
-            combinedStyles = { ...styles };
+            const className = `dynamic-${Math.random().toString(36).substr(2, 8)}`;
+            node.classList.add(className);
+            globalStyles['base'].push(this.generateCssRule(className, styles));
           }
           node.removeAttribute('ngStyle');
         }
 
-        // Handle responsive ngStyle.<breakpoint>
-        Object.entries(responsiveBreakpoints).forEach(([suffix, mediaQuery]) => {
-          const directive = `ngStyle.${suffix}`;
+        // Process responsive `ngStyle`
+        Object.entries(responsiveBreakpoints).forEach(([breakpoint, query]) => {
+          const directive = `ngStyle.${breakpoint}`;
           const responsiveStyle = node.getAttribute(directive);
-
           if (responsiveStyle) {
-            const styles = evaluateExpression(responsiveStyle, data) as Record<string, string>;
+            const styles = evaluateExpression(responsiveStyle, data);
             if (styles && typeof styles === 'object') {
-              const className = `${baseClassName || `dynamic-${Math.random().toString(36).substr(2, 8)}`}-${suffix}`;
+              const className = `dynamic-${Math.random().toString(36).substr(2, 8)}`;
               node.classList.add(className);
-
-              styleBlocks.push(`
-                @media ${mediaQuery} {
-                  .${className} {
-                    ${Object.entries(styles)
-                      .map(([key, value]) => `${key}: ${value};`)
-                      .join(' ')}
-                  }
-                }
-              `);
+              globalStyles[breakpoint].push(this.generateCssRule(className, styles));
             }
             node.removeAttribute(directive);
           }
         });
-
-        // Add the base class to the element
-        if (Object.keys(combinedStyles).length > 0) {
-          const baseClassNameFinal = baseClassName || `dynamic-${Math.random().toString(36).substr(2, 8)}`;
-          node.classList.add(baseClassNameFinal);
-
-          styleBlocks.push(`
-            .${baseClassNameFinal} {
-              ${Object.entries(combinedStyles)
-                .map(([key, value]) => `${key}: ${value};`)
-                .join(' ')}
-            }
-          `);
-        }
       }
     });
 
-    // Append all styles to the document
+    // Generate style blocks
+    const styleBlocks = Object.entries(globalStyles)
+      .map(([breakpoint, styles]) => {
+        if (styles.length === 0) return ''; // Skip empty styles
+        const mediaQuery =
+          breakpoint in responsiveBreakpoints && responsiveBreakpoints[breakpoint as Breakpoint]
+            ? `@media ${responsiveBreakpoints[breakpoint as Breakpoint]}`
+            : '';
+        return `${mediaQuery} {\n${styles.join('\n')}\n}`;
+      })
+      .filter(Boolean);
+
+    // Append styles to the document
     if (styleBlocks.length > 0) {
       const styleTag = document.createElement('style');
       styleTag.textContent = styleBlocks.join('\n');
       doc.body.appendChild(styleTag);
     }
 
-    // Serialize the DOM back to an HTML string
     return doc.body.innerHTML;
   }
+
+  // Utility function to generate CSS rules
+  generateCssRule(className: string, styles: Record<string, any>): string {
+    return `.${className} { ${Object.entries(styles)
+      .map(([key, value]) => `${key}: ${value};`)
+      .join(' ')} }`;
+  }
+
+
+
+
 
 
 

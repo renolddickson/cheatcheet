@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { HtmlContent, jsonData } from '../../Constants/data';
 
 type Breakpoint =
   | 'xs'
